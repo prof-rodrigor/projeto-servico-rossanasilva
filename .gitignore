@@ -64,4 +64,3 @@ local.properties
 #.project
 /logs/app.log
 
-**/application.properties

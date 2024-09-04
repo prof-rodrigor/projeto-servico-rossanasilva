@@ -19,54 +19,6 @@ public class PingController {
 
     private static final Logger logger = LogManager.getLogger(PingController.class);
 
-
-    public void mostrarPaginaPing(Context ctx) {
-        String pingHost = ctx.appData(Keys.SERVICO_PING_HOST.key());
-        String nomeServico = recuperarNomeServico(pingHost);
-
-        ctx.attribute("servico_host", pingHost);
-        ctx.attribute("servico_nome", nomeServico);
-        ctx.render("/ping/ping.html");
-    }
-
-    private String recuperarNomeServico(String pingHost) {
-        if (pingHost == null || pingHost.isEmpty()) {
-            logger.warn("Host do serviço de ping não configurado.");
-            return "Desconhecido";
-        }
-
-        String urlServico = pingHost + "/v1/ping";
-        try {
-            HttpURLConnection conexao = criarConexao(urlServico);
-
-            if (conexao.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                return extrairNomeServicoDaResposta(conexao);
-            } else {
-                logger.warn("Resposta inesperada do serviço: HTTP " + conexao.getResponseCode());
-                return "Desconhecido";
-            }
-        } catch (IOException e) {
-            logger.error("Erro ao recuperar nome do serviço", e);
-            return "Desconhecido";
-        }
-    }
-
-    private HttpURLConnection criarConexao(String urlServico) throws IOException {
-        URL url = new URL(urlServico);
-        HttpURLConnection conexao = (HttpURLConnection) url.openConnection();
-        conexao.setRequestMethod("GET");
-        conexao.setRequestProperty("Accept", "application/json");
-        return conexao;
-    }
-
-    private String extrairNomeServicoDaResposta(HttpURLConnection conexao) throws IOException {
-        try (InputStream fluxoResposta = conexao.getInputStream()) {
-            String respostaJson = new String(fluxoResposta.readAllBytes(), StandardCharsets.UTF_8);
-            Map<String, String> mapaResposta = new ObjectMapper().readValue(respostaJson, Map.class);
-            return mapaResposta.getOrDefault("servico.nome", "Desconhecido");
-        }
-    }
-
     // /v1/ping
     public void ping(Context ctx) {
         String serviceName = ctx.appData(Keys.SERVICO_NOME.key());
