@@ -9,8 +9,7 @@ public enum Keys {
     MONGO_DB(new Key<MongoDBRepository>("mongo-db")),
     SERVICO_NOME(new Key<String>("servico.nome")),
     PARTICIPANTE_SERVICE(new Key<ParticipanteService>("participante-service")),
-    USUARIO_SERVICE(new Key<UsuarioService>("usuario-service")),
-    SERVICO_PING_HOST(new Key<String>("servico.ping.host"))
+    USUARIO_SERVICE(new Key<UsuarioService>("usuario-service"))
     ;
 
     private final Key<?> k;
